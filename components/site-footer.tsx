@@ -5,7 +5,7 @@ import Image from 'next/image'
 export function SiteFooter() {
   return (
     <footer className="bg-black border-t border-gray-800 py-12">
-      <div className="container">
+     <div className="max-w-7xl mx-auto px-6 md:px-8">
         <div className="grid gap-8 md:grid-cols-4">
           <div className="space-y-4">
            <Link href="/" className="flex items-center space-x-2">

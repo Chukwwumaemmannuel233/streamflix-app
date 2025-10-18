@@ -78,28 +78,31 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8">
         {/* Movie Collage Background */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/60 z-10" />
-          <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-1 h-full opacity-20">
-            {[...Array(32)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="relative overflow-hidden"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.02, duration: 0.8 }}
-              >
-                <img
-                  src={`/ceholder-svg-height-200-width-150-text-movie.jpg?height=200&width=150&text=Movie${
-                    i + 1
-                  }`}
-                  alt={`Movie ${i + 1}`}
-                  className="w-full h-full object-cover"
-                />
-              </motion.div>
-            ))}
-          </div>
-        </div>
+       <div className="absolute inset-0">
+  {/* Make the overlay lighter */}
+  <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/40 to-black/30 z-10" />
+
+  {/* Make the grid more visible */}
+  <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-1 h-full opacity-70">
+    {[...Array(32)].map((_, i) => (
+      <motion.div
+        key={i}
+        className="relative overflow-hidden"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: i * 0.02, duration: 0.8 }}
+      >
+        <img
+          src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLwDX44xRmCPMH93o12YNqjl7yHDv7mEekbwDwluEXEwxLxJauRmP4MYI&s${
+            i + 1
+          }`}
+          alt={`Movie ${i + 1}`}
+          className="w-full h-full object-cover"
+        />
+      </motion.div>
+    ))}
+    </div>
+   </div>
 
         {/* Floating particles */}
         <div className="absolute inset-0 z-20">
@@ -218,7 +221,7 @@ export default function LandingPage() {
               className="mt-4 sm:mt-6 text-xs sm:text-sm text-gray-400 px-4"
               variants={fadeInUp}
             >
-              30-day free trial • No contracts • Cancel anytime
+              7-day free trial • No contracts • Cancel anytime
             </motion.p>
           </motion.div>
         </div>
@@ -261,14 +264,14 @@ export default function LandingPage() {
                       <User className="h-8 w-8 sm:h-10 sm:w-10 text-blue-400" />
                     </div>
                   </motion.div>
-                  <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">
+                  <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-gray-200">
                     For Viewers
                   </h3>
                   <p className="text-sm sm:text-base text-gray-400 mb-4 sm:mb-6">
                     Stream unlimited content from studios worldwide. Discover,
                     watch, and enjoy premium entertainment.
                   </p>
-                  <ul className="text-left space-y-2 mb-6 sm:mb-8">
+                  <ul className="text-left space-y-2 mb-6 sm:mb-8 text-gray-400">
                     <li className="flex items-center gap-2 text-sm">
                       <Check className="h-4 w-4 text-green-400 flex-shrink-0" />
                       <span>Unlimited streaming</span>
@@ -313,14 +316,14 @@ export default function LandingPage() {
                       <Building2 className="h-8 w-8 sm:h-10 sm:w-10 text-red-400" />
                     </div>
                   </motion.div>
-                  <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">
+                  <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-gray-200">
                     For Studios & Creators
                   </h3>
                   <p className="text-sm sm:text-base text-gray-400 mb-4 sm:mb-6">
                     Upload and monetize your content. Reach millions of viewers
                     and grow your audience globally.
                   </p>
-                  <ul className="text-left space-y-2 mb-6 sm:mb-8">
+                  <ul className="text-left space-y-2 mb-6 sm:mb-8 text-gray-400">
                     <li className="flex items-center gap-2 text-sm">
                       <Check className="h-4 w-4 text-green-400 flex-shrink-0" />
                       <span>Upload unlimited content</span>
@@ -412,7 +415,7 @@ export default function LandingPage() {
                     </div>
                   </div>
                   <CardContent className="p-3">
-                    <h3 className="font-bold mb-1 text-sm line-clamp-1">
+                    <h3 className="font-bold mb-1 text-sm line-clamp-1 text-gray-600">
                       {movie.title}
                     </h3>
                     <p className="text-gray-400 text-xs mb-2 line-clamp-2">
@@ -510,7 +513,7 @@ export default function LandingPage() {
                         <feature.icon className="h-6 w-6 sm:h-8 sm:w-8 text-red-400" />
                       </div>
                     </motion.div>
-                    <h3 className="text-sm sm:text-base font-bold mb-2">
+                    <h3 className="text-sm sm:text-base font-bold mb-2 text-gray-500">
                       {feature.title}
                     </h3>
                     <p className="text-xs sm:text-sm text-gray-400">
@@ -606,7 +609,7 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-gray-900">
+      {/* <section className="py-12 sm:py-16 lg:py-20 bg-gray-900">
         <div className="container px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -729,7 +732,7 @@ export default function LandingPage() {
             ))}
           </motion.div>
         </div>
-      </section>
+      </section> */}
 
       {/* Final CTA */}
       <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-r from-red-600 via-red-700 to-red-800 relative overflow-hidden">

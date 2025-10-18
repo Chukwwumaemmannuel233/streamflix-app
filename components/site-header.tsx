@@ -29,6 +29,7 @@ export function SiteHeader() {
 
   const isLandingPage = pathname === "/";
   const isAuthPage = pathname === "/sign-in" || pathname === "/sign-up";
+  const isTermsPage = pathname === "/terms" || pathname === "/privacy";
   const isDashboardPage =
     pathname.startsWith("/home") ||
     pathname.startsWith("/watch") ||
@@ -99,42 +100,48 @@ export function SiteHeader() {
   if (isAuthenticated) {
     return (
       <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between px-4">
+        <div className="container flex h-14 sm:h-16 items-center justify-between px-4 gap-2">
           {/* Logo + Nav */}
-          <div className="flex items-center gap-4">
-            <Link href="/home" className="flex items-center gap-2">
-              <Play className="h-6 w-6 text-primary" />
-              <span className="font-bold hidden sm:inline">StreamFlix</span>
-            </Link>
+          <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+           <Link href="/" className="flex items-center space-x-2">
+            <Image
+              src="/logo.png"
+              alt="Streamflix Logo"
+              width={32}
+              height={32}
+              className="h-8 w-8 sm:h-10 sm:w-10"
+            />
+            <span className="hidden sm:inline text-2xl font-bold text-red-400">
+              StreamFlix
+            </span>
+          </Link>
+
             {/* Desktop Nav */}
-            <div className="hidden md:flex">
+            <div className="hidden lg:flex">
               <MainNav />
             </div>
           </div>
 
-          {/* Search + Right actions */}
-          <div className="flex items-center gap-2">
-            {/* Search bar */}
-            <form onSubmit={handleSearch} className="relative hidden sm:block">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <div className="flex items-center gap-1 sm:gap-2 flex-1 justify-end min-w-0">
+            {/* Search bar - now more prominent on mobile */}
+            <form
+              onSubmit={handleSearch}
+              className="relative flex-1 max-w-[160px] sm:max-w-[220px] md:max-w-[280px] lg:max-w-[380px]"
+            >
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
               <Input
                 type="search"
                 placeholder="Search..."
-                className="rounded-full pl-8 w-[150px] md:w-[200px] lg:w-[300px]"
+                className="rounded-full pl-8 pr-3 w-full h-9 text-sm"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </form>
 
-            {/* Icons */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="hidden md:flex"
-              asChild
-            >
+            {/* Icons - hidden on small screens to give search more space */}
+            <Button variant="ghost" size="icon" className="hidden md:flex h-9 w-9 flex-shrink-0" asChild>
               <Link href="/notifications">
-                <Bell className="h-5 w-5" />
+                <Bell className="h-4 w-4" />
                 <span className="sr-only">Notifications</span>
               </Link>
             </Button>
@@ -142,12 +149,8 @@ export function SiteHeader() {
             {/* Avatar */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="relative h-8 w-8 rounded-full"
-                >
+                <Button variant="ghost" className="relative h-8 w-8 rounded-full flex-shrink-0">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src="/avatar.png" alt="@user" />
                     <AvatarFallback>U</AvatarFallback>
                   </Avatar>
                 </Button>
@@ -155,17 +158,16 @@ export function SiteHeader() {
               <DropdownMenuContent align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      username
-                    </p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      user@example.com
-                    </p>
+                    <p className="text-sm font-medium leading-none">username</p>
+                    <p className="text-xs leading-none text-muted-foreground">user@example.com</p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/profile">Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/user-dashboard">Dashboard</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/my-list">My List</Link>
@@ -174,52 +176,93 @@ export function SiteHeader() {
                   <Link href="/settings">Settings</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem className="md:hidden" asChild>
+                  <Link href="/notifications">Notifications</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="md:hidden" />
                 <DropdownMenuItem asChild>
                   <Link href="/">Sign out</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <ThemeToggle />
+            <ThemeToggle className="flex-shrink-0" />
 
-            {/* Mobile menu */}
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                  <Menu className="h-5 w-5" />
+                <Button variant="ghost" size="icon" className="lg:hidden h-9 w-9 flex-shrink-0">
+                  <Menu className="h-4 w-4" />
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-64">
-                <MainNav isMobile />
-                <form onSubmit={handleSearch} className="relative mt-4">
-                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="search"
-                    placeholder="Search..."
-                    className="pl-8 w-full rounded-full"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </form>
+                <div className="flex flex-col space-y-4">
+                  <MainNav isMobile />
+                </div>
               </SheetContent>
             </Sheet>
           </div>
         </div>
       </header>
-    );
+    )
   }
 
   // Auth pages
+  if (isAuthPage) {
+    return (
+      <header className="sticky top-0 z-40 w-full bg-background/95 backdrop-blur">
+        <div className="container flex h-16 items-center justify-between px-4">
+          <Link href="/" className="flex items-center space-x-2">
+            <Image
+              src="/logo.png"
+              alt="Streamflix Logo"
+              width={32}
+              height={32}
+              className="h-8 w-8 sm:h-10 sm:w-10"
+            />
+            <span className="hidden sm:inline text-2xl font-bold text-red-400">
+              StreamFlix
+            </span>
+          </Link>
+          <ThemeToggle />
+        </div>
+      </header>
+    );
+  }
+
+ if (isTermsPage) {
+  // figure out which page the user is on
+  const isOnTerms = pathname === "/terms";
+  const otherPage = isOnTerms
+    ? { href: "/privacy", label: "Privacy Policy" }
+    : { href: "/terms", label: "Terms of Service" };
+
   return (
     <header className="sticky top-0 z-40 w-full bg-background/95 backdrop-blur">
-      <div className="container flex h-16 items-center justify-between px-4">
-        <Link href="/" className="flex items-center space-x-2">
-          <Play className="h-6 w-6 text-primary" />
-          <span className="text-xl font-bold">StreamFlix</span>
+      <div className="container mx-auto px-4 py-6 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-3">
+          <img src="/logo.png" alt="StreamFlix" className="w-10 h-10 rounded" />
+          <span className="font-bold text-red-400 text-lg">StreamFlix</span>
         </Link>
-        <ThemeToggle />
+
+        <nav className="flex items-center gap-4">
+          {/* Show the opposite link based on current page */}
+          <Link
+            href={otherPage.href}
+            className="text-sm text-gray-300 hover:text-white"
+          >
+            {otherPage.label}
+          </Link>
+          <Link
+            href="/"
+            className="text-sm bg-red-600 px-3 py-1 rounded text-white hover:bg-red-700"
+          >
+            Home
+          </Link>
+        </nav>
       </div>
     </header>
   );
+}
+
 }
