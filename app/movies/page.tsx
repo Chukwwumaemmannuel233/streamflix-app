@@ -1,85 +1,64 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import { VideoCard } from "@/components/video-card"
+import { useEffect, useMemo, useState } from "react"
+
+import { FilterChips, LibraryHero, VideoSection, ViewerShell, libraryIcons } from "@/components/viewer-library"
 import { mockVideos } from "@/lib/data"
-import { PageHeader } from "@/components/page-header"
-import { PageLoading } from "@/components/page-loading"
 
-const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5 },
-}
-
-const staggerContainer = {
-  animate: {
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-}
+const filters = ["All", "Action", "Drama", "Sci-Fi", "Thriller", "Adventure", "Premium"]
 
 export default function MoviesPage() {
-  const [isLoading, setIsLoading] = useState(true)
+  const [activeFilter, setActiveFilter] = useState("All")
+  const [isReady, setIsReady] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1500)
-    return () => clearTimeout(timer)
+    const timer = window.setTimeout(() => setIsReady(true), 500)
+    return () => window.clearTimeout(timer)
   }, [])
 
-  if (isLoading) {
-    return <PageLoading title="Loading Movies..." />
-  }
-
-  const movies = mockVideos.filter(
-    (video) =>
-      video.categories.includes("action") || video.categories.includes("drama") || video.categories.includes("sci-fi"),
+  const movies = useMemo(
+    () =>
+      mockVideos.filter((video) =>
+        video.categories.some((category) => ["action", "drama", "sci-fi", "thriller", "adventure", "fantasy"].includes(category)),
+      ),
+    [],
   )
 
+  const filteredMovies = movies.filter((video) => {
+    if (activeFilter === "All") return true
+    if (activeFilter === "Premium") return video.access === "premium"
+    return video.categories.includes(activeFilter.toLowerCase())
+  })
+
+  const featured = movies.find((video) => video.access === "premium") || movies[0]
+
   return (
-    <div className="min-h-screen bg-background pb-10">
-      <div className="container py-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          <PageHeader title="Movies" description="Discover blockbusters and hidden gems" />
-        </motion.div>
+    <ViewerShell>
+      <LibraryHero
+        title="Movies that feel made for tonight"
+        eyebrow="Movie library"
+        description="Browse premium premieres, studio releases, and sharp independent films in one calm, cinematic space."
+        featured={featured}
+        icon={libraryIcons.movies}
+        primaryHref={featured ? `/watch/${featured.id}` : undefined}
+        stats={[`${movies.length} movies`, "Premium picks", "Mobile ready"]}
+      />
 
-        <motion.section className="mb-10" variants={staggerContainer} initial="initial" animate="animate">
-          <motion.h2 className="mb-6 text-2xl font-semibold" variants={fadeInUp}>
-            Popular Movies
-          </motion.h2>
-          <motion.div
-            className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
-            variants={staggerContainer}
-          >
-            {movies.slice(0, 5).map((video) => (
-              <motion.div key={video.id} variants={fadeInUp} whileHover={{ y: -5 }}>
-                <VideoCard video={video} />
-              </motion.div>
-            ))}
-          </motion.div>
-        </motion.section>
-
-        <motion.section className="mb-10" variants={staggerContainer} initial="initial" animate="animate">
-          <motion.h2 className="mb-6 text-2xl font-semibold" variants={fadeInUp}>
-            Action Movies
-          </motion.h2>
-          <motion.div
-            className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
-            variants={staggerContainer}
-          >
-            {movies
-              .filter((v) => v.categories.includes("action"))
-              .slice(0, 5)
-              .map((video) => (
-                <motion.div key={video.id} variants={fadeInUp} whileHover={{ y: -5 }}>
-                  <VideoCard video={video} />
-                </motion.div>
-              ))}
-          </motion.div>
-        </motion.section>
+      <div className="container pt-8">
+        <FilterChips items={filters} active={activeFilter} onChange={setActiveFilter} />
       </div>
-    </div>
+
+      <VideoSection
+        title={activeFilter === "All" ? "All Movies" : `${activeFilter} Movies`}
+        description={isReady ? "Curated from your viewer catalog with clear premium labels." : "Loading a polished catalog view."}
+        videos={filteredMovies}
+      />
+
+      <VideoSection
+        title="Studio Picks"
+        description="High-signal releases from verified studios and production companies."
+        videos={movies.filter((video) => video.studio?.verified).slice(0, 5)}
+      />
+    </ViewerShell>
   )
 }

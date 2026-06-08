@@ -1,11 +1,13 @@
 "use client"
 import { motion, AnimatePresence } from "framer-motion"
-import { X, Play, Star, Calendar, Clock, Users } from "lucide-react"
+import { Crown, X, Play, Star, Calendar, Clock, Users } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import type { VideoType } from "@/lib/types"
+import { getAccessStatus } from "@/lib/access"
 
 interface VideoModalProps {
   video: VideoType | null
@@ -15,6 +17,12 @@ interface VideoModalProps {
 
 export function VideoModal({ video, isOpen, onClose }: VideoModalProps) {
   if (!video) return null
+
+  const accessStatus = getAccessStatus()
+  const primaryHref =
+    video.access === "premium" && !accessStatus.isPaid
+      ? `/payment?reason=premium&returnTo=${encodeURIComponent(`/watch/${video.id}`)}`
+      : `/watch/${video.id}`
 
   return (
     <AnimatePresence>
@@ -86,6 +94,12 @@ export function VideoModal({ video, isOpen, onClose }: VideoModalProps) {
                   </div>
 
                   <div className="flex flex-wrap gap-2">
+                    {video.access === "premium" && (
+                      <Badge className="bg-red-600 text-white hover:bg-red-600">
+                        <Crown className="mr-1 h-3 w-3" />
+                        Premium
+                      </Badge>
+                    )}
                     {video.categories?.map((category) => (
                       <Badge key={category} variant="secondary" className="text-xs">
                         {category}
@@ -120,10 +134,17 @@ export function VideoModal({ video, isOpen, onClose }: VideoModalProps) {
                 )}
 
                 <div className="pt-4 space-y-3">
-                  <Button className="w-full bg-red-600 hover:bg-red-700" size="lg">
-                    <Play className="mr-2 h-4 w-4 fill-current" />
-                    Get Started
+                  <Button className="w-full bg-red-600 hover:bg-red-700" size="lg" asChild>
+                    <Link href={primaryHref}>
+                      <Play className="mr-2 h-4 w-4 fill-current" />
+                      {video.access === "premium" && !accessStatus.isPaid ? "Unlock with a plan" : "Watch Now"}
+                    </Link>
                   </Button>
+                  {video.access === "premium" && !accessStatus.isPaid && (
+                    <p className="text-center text-xs text-muted-foreground">
+                      Premium titles require a paid plan, even during the 7-day trial.
+                    </p>
+                  )}
                   <Button variant="outline" className="w-full bg-transparent" size="lg">
                     Add to My List
                   </Button>

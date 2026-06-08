@@ -11,8 +11,8 @@ interface ConditionalFooterProps {
 export function ConditionalFooter({ children }: ConditionalFooterProps) {
   const pathname = usePathname()
 
-  // Only show footer on landing page
-  if (pathname === "/") {
+  // Only show footer on public landing pages
+  if (pathname === "/" || pathname === "/landing" || pathname === "/studio") {
     return <>{children}</>
   }
 

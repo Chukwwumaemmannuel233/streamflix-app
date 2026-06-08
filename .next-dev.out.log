@@ -1,0 +1,64 @@
+
+> my-v0-project@0.1.0 dev
+> next dev
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3002
+
+ ✓ Starting...
+ ✓ Ready in 7.1s
+ ○ Compiling /sign-up ...
+ ✓ Compiled /sign-up in 30.2s (1721 modules)
+ GET /studio/sign-in 200 in 31915ms
+ GET / 200 in 31952ms
+ GET /sign-up 200 in 31929ms
+ GET /studio 200 in 32081ms
+ ✓ Compiled in 2.1s (847 modules)
+ ✓ Compiled in 23.3s (846 modules)
+ ✓ Compiled in 4.7s (846 modules)
+ ○ Compiling / ...
+ ✓ Compiled / in 1918ms (818 modules)
+ ✓ Compiled (827 modules)
+ GET / 200 in 14962ms
+ GET /studio 200 in 15061ms
+ ✓ Compiled in 14.3s (846 modules)
+ ✓ Compiled in 10.9s (846 modules)
+ ✓ Compiled in 2.2s (846 modules)
+ ○ Compiling /studio ...
+ ✓ Compiled /studio in 646ms (813 modules)
+ ✓ Compiled (827 modules)
+ GET /studio 200 in 2325ms
+ GET / 200 in 2355ms
+ ✓ Compiled in 13.3s (842 modules)
+ ✓ Compiled in 2.8s (828 modules)
+ ✓ Compiled in 4s (842 modules)
+ ✓ Compiled in 3.5s (828 modules)
+ ○ Compiling /studio/sign-in ...
+ ✓ Compiled /studio/sign-in in 13.1s (1363 modules)
+ GET /studio/sign-in 200 in 14212ms
+ GET /studio/studio-signup 200 in 14247ms
+ ○ Compiling /studio/sign-up ...
+ ✓ Compiled /studio/sign-up in 1097ms (1371 modules)
+ GET /studio/sign-up 307 in 2867ms
+ GET /studio/studio-signup 200 in 232ms
+ ✓ Compiled in 6.4s (890 modules)
+ ✓ Compiled in 25.8s (890 modules)
+ ✓ Compiled in 8.9s (890 modules)
+ ○ Compiling /middleware ...
+ ✓ Compiled /middleware in 2s (72 modules)
+ ○ Compiling / ...
+ ✓ Compiled / in 12.9s (818 modules)
+ ✓ Compiled in 2.8s (880 modules)
+ GET /waitlist 200 in 20018ms
+ GET / 200 in 20046ms
+ GET /studio 200 in 20070ms
+ ✓ Compiled in 2.4s (894 modules)
+ ✓ Compiled in 3.7s (894 modules)
+ ○ Compiling /waitlist ...
+ ✓ Compiled /waitlist in 978ms (818 modules)
+ GET /waitlist 200 in 2629ms
+ ✓ Compiled in 4.1s (1712 modules)
+ GET /waitlist 200 in 575ms
+ ✓ Compiled in 3.4s (894 modules)
+ ✓ Compiled /waitlist in 494ms (818 modules)
+ GET /waitlist 200 in 1000ms

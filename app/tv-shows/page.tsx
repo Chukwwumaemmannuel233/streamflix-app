@@ -1,68 +1,58 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import { VideoCard } from "@/components/video-card"
+import { useMemo, useState } from "react"
+
+import { FilterChips, LibraryHero, VideoSection, ViewerShell, libraryIcons } from "@/components/viewer-library"
 import { mockVideos } from "@/lib/data"
-import { PageHeader } from "@/components/page-header"
-import { PageLoading } from "@/components/page-loading"
 
-const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5 },
-}
-
-const staggerContainer = {
-  animate: {
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-}
+const filters = ["All", "Drama", "Comedy", "Documentary", "Animation", "Trending", "Standard"]
 
 export default function TVShowsPage() {
-  const [isLoading, setIsLoading] = useState(true)
+  const [activeFilter, setActiveFilter] = useState("All")
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1500)
-    return () => clearTimeout(timer)
-  }, [])
-
-  if (isLoading) {
-    return <PageLoading title="Loading TV Shows..." />
-  }
-
-  const tvShows = mockVideos.filter(
-    (video) =>
-      video.categories.includes("comedy") ||
-      video.categories.includes("drama") ||
-      video.categories.includes("documentary"),
+  const shows = useMemo(
+    () =>
+      mockVideos.filter((video) =>
+        video.categories.some((category) => ["drama", "comedy", "documentary", "animation", "trending", "romance"].includes(category)),
+      ),
+    [],
   )
 
-  return (
-    <div className="min-h-screen bg-background pb-10">
-      <div className="container py-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          <PageHeader title="TV Shows" description="Binge-worthy series for every mood" />
-        </motion.div>
+  const filteredShows = shows.filter((video) => {
+    if (activeFilter === "All") return true
+    if (activeFilter === "Standard") return video.access !== "premium"
+    return video.categories.includes(activeFilter.toLowerCase())
+  })
 
-        <motion.section className="mb-10" variants={staggerContainer} initial="initial" animate="animate">
-          <motion.h2 className="mb-6 text-2xl font-semibold" variants={fadeInUp}>
-            Popular Shows
-          </motion.h2>
-          <motion.div
-            className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
-            variants={staggerContainer}
-          >
-            {tvShows.slice(0, 5).map((video) => (
-              <motion.div key={video.id} variants={fadeInUp} whileHover={{ y: -5 }}>
-                <VideoCard video={video} />
-              </motion.div>
-            ))}
-          </motion.div>
-        </motion.section>
+  const featured = shows.find((video) => video.categories.includes("trending")) || shows[0]
+
+  return (
+    <ViewerShell>
+      <LibraryHero
+        title="Series and shows built for easy watching"
+        eyebrow="TV shows"
+        description="Find binge-friendly stories, factual series, comedy specials, and episodic favorites without the clutter."
+        featured={featured}
+        icon={libraryIcons.tv}
+        primaryHref={featured ? `/watch/${featured.id}` : undefined}
+        stats={[`${shows.length} shows`, "Fresh episodes", "Viewer-first layout"]}
+      />
+
+      <div className="container pt-8">
+        <FilterChips items={filters} active={activeFilter} onChange={setActiveFilter} />
       </div>
-    </div>
+
+      <VideoSection
+        title={activeFilter === "All" ? "All TV Shows" : `${activeFilter} Shows`}
+        description="Designed to scan quickly on desktop and feel natural on mobile."
+        videos={filteredShows}
+      />
+
+      <VideoSection
+        title="Continue With These"
+        description="Series-style picks based on drama, comedy, documentary, and trending rails."
+        videos={shows.slice(0, 5)}
+      />
+    </ViewerShell>
   )
 }

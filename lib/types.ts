@@ -9,6 +9,7 @@ export interface VideoType {
   rating: string
   views: number
   categories: string[]
+  access?: "standard" | "premium"
   creator: {
     name: string
     avatar: string
@@ -19,6 +20,7 @@ export interface VideoType {
     logo: string
     verified: boolean
     type: string
+    subscribers?: number
   }
 }
 

@@ -3,7 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { Play, CheckCircle } from "lucide-react"
+import { Crown, Play, CheckCircle } from "lucide-react"
 
 import type { VideoType } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -39,6 +39,12 @@ export function VideoCard({ video, className, showInfo = true, showStudio = true
             <Play className="h-8 w-8 sm:h-12 sm:w-12 text-white fill-white" />
           </motion.div>
         </motion.div>
+        {video.access === "premium" && (
+          <div className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-md bg-red-600 px-2 py-1 text-[10px] font-bold uppercase text-white shadow-lg">
+            <Crown className="h-3 w-3" />
+            Premium
+          </div>
+        )}
       </motion.div>
 
       {showInfo && (
@@ -67,9 +73,9 @@ export function VideoCard({ video, className, showInfo = true, showStudio = true
 
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span>{video.views.toLocaleString()} views</span>
-            <span>•</span>
+            <span>-</span>
             <span>{video.year}</span>
-            <span>•</span>
+            <span>-</span>
             <span>{video.duration}</span>
           </div>
         </motion.div>

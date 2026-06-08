@@ -1,45 +1,53 @@
+"use client"
+
 import Link from "next/link"
-import { ChevronLeft } from "lucide-react"
+import { ChevronLeft, Tag } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { VideoCard } from "@/components/video-card"
-import { mockVideos, categories } from "@/lib/data"
+import { EmptyState, LibraryHero, VideoSection, ViewerShell } from "@/components/viewer-library"
+import { categories, mockVideos } from "@/lib/data"
 
 export default function CategoryPage({ params }: { params: { id: string } }) {
-  // Find the category
   const category = categories.find((cat) => cat.id === params.id) || { id: params.id, name: "Category" }
-
-  // Get videos for this category
   const categoryVideos = mockVideos.filter((video) => video.categories.includes(category.id))
+  const featured = categoryVideos[0] || mockVideos[0]
 
   return (
-    <div className="min-h-screen bg-background pb-10">
-      <div className="container py-6">
-        <div className="mb-6 flex items-center gap-4">
-          <Button variant="ghost" size="icon" asChild>
-            <Link href="/">
-              <ChevronLeft className="h-5 w-5" />
-            </Link>
-          </Button>
-          <h1 className="text-3xl font-bold">{category.name}</h1>
-        </div>
+    <ViewerShell>
+      <LibraryHero
+        title={category.name}
+        eyebrow="Category"
+        description={`Explore ${category.name.toLowerCase()} titles across movies, shows, premium releases, and studio uploads.`}
+        featured={featured}
+        icon={Tag}
+        primaryHref={featured ? `/watch/${featured.id}` : "/categories"}
+        primaryLabel={categoryVideos.length ? "Watch featured" : "Browse categories"}
+        stats={[`${categoryVideos.length} titles`, "Responsive grid", "Premium visible"]}
+      />
 
-        {categoryVideos.length > 0 ? (
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            {categoryVideos.map((video) => (
-              <VideoCard key={video.id} video={video} />
-            ))}
-          </div>
-        ) : (
-          <div className="flex h-[50vh] flex-col items-center justify-center text-center">
-            <h2 className="text-2xl font-semibold">No videos found</h2>
-            <p className="mt-2 text-muted-foreground">We couldn't find any videos in this category.</p>
-            <Button className="mt-4" asChild>
-              <Link href="/">Back to Home</Link>
-            </Button>
-          </div>
-        )}
+      <div className="container pt-6">
+        <Button variant="ghost" className="text-zinc-300 hover:bg-white/10 hover:text-white" asChild>
+          <Link href="/categories">
+            <ChevronLeft className="mr-2 h-4 w-4" />
+            Back to Categories
+          </Link>
+        </Button>
       </div>
-    </div>
+
+      {categoryVideos.length > 0 ? (
+        <VideoSection
+          title={`${category.name} Titles`}
+          description="A clean, mobile-friendly grid for this category."
+          videos={categoryVideos}
+        />
+      ) : (
+        <EmptyState
+          title="No videos found"
+          description="This category is ready for future studio uploads, but it does not have any viewer titles yet."
+          actionHref="/categories"
+          actionLabel="Browse all categories"
+        />
+      )}
+    </ViewerShell>
   )
 }

@@ -1,38 +1,40 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Bell, Check, Clock, Film, Info, MessageSquare, ThumbsUp } from "lucide-react"
-import { PageHeader } from "@/components/page-header"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
+import { useEffect, useState } from "react"
+import { Bell, Check, Clock, Crown, Film, Info, Sparkles } from "lucide-react"
+import { toast } from "sonner"
 
-// Mock notification data
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ViewerShell } from "@/components/viewer-library"
+import { cn } from "@/lib/utils"
+
 const mockNotifications = [
   {
     id: "1",
     type: "new-content",
     title: "New Release: The Last Journey",
-    message: "The highly anticipated sequel is now available to stream.",
+    message: "A new premium release is ready to stream tonight.",
     time: "2 hours ago",
     read: false,
     link: "/watch/featured",
   },
   {
     id: "2",
-    type: "like",
-    title: "Your comment received 5 likes",
-    message: "Your comment on 'Cosmic Odyssey' is getting attention.",
+    type: "premium",
+    title: "Premium pick matched your taste",
+    message: "Cosmic Odyssey is trending with sci-fi viewers this week.",
     time: "Yesterday",
     read: true,
     link: "/watch/1",
   },
   {
     id: "3",
-    type: "reply",
-    title: "New reply to your comment",
-    message: "Someone replied to your comment on 'The Hidden Truth'.",
+    type: "new-content",
+    title: "New studio upload",
+    message: "Mystery Box Productions added a thriller to the catalog.",
     time: "2 days ago",
     read: false,
     link: "/watch/2",
@@ -48,176 +50,175 @@ const mockNotifications = [
   },
   {
     id: "5",
-    type: "new-content",
-    title: "New in your watchlist",
-    message: "A new episode of 'Digital Frontier' has been added.",
+    type: "list",
+    title: "New in your list",
+    message: "A saved title now has a fresh trailer and studio details.",
     time: "4 days ago",
     read: true,
-    link: "/watch/7",
+    link: "/my-list",
   },
 ]
+
+function getNotificationIcon(type: string) {
+  switch (type) {
+    case "new-content":
+      return Film
+    case "premium":
+      return Crown
+    case "list":
+      return Sparkles
+    case "system":
+      return Info
+    default:
+      return Bell
+  }
+}
 
 export default function NotificationsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [notifications, setNotifications] = useState(mockNotifications)
 
   useEffect(() => {
-    // Simulate loading
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 1000)
-
-    return () => clearTimeout(timer)
+    const timer = window.setTimeout(() => setIsLoading(false), 650)
+    return () => window.clearTimeout(timer)
   }, [])
 
+  const unreadCount = notifications.filter((notification) => !notification.read).length
+
   const markAllAsRead = () => {
-    setNotifications((prev) =>
-      prev.map((notification) => ({
-        ...notification,
-        read: true,
-      })),
+    setNotifications((prev) => prev.map((notification) => ({ ...notification, read: true })))
+    toast.success("Notifications updated", {
+      description: "All viewer alerts were marked as read.",
+    })
+  }
+
+  const NotificationList = ({ onlyUnread = false }: { onlyUnread?: boolean }) => {
+    const list = onlyUnread ? notifications.filter((notification) => !notification.read) : notifications
+
+    if (isLoading) {
+      return (
+        <div className="space-y-3">
+          {[1, 2, 3, 4].map((id) => (
+            <div key={id} className="flex gap-4 rounded-lg border border-white/10 bg-white/[0.04] p-4">
+              <Skeleton className="h-11 w-11 rounded-lg bg-white/10" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-5 w-2/3 bg-white/10" />
+                <Skeleton className="h-4 w-full bg-white/10" />
+                <Skeleton className="h-3 w-1/4 bg-white/10" />
+              </div>
+            </div>
+          ))}
+        </div>
+      )
+    }
+
+    if (!list.length) {
+      return (
+        <div className="rounded-lg border border-white/10 bg-white/[0.04] p-10 text-center">
+          <Check className="mx-auto h-12 w-12 text-zinc-500" />
+          <h2 className="mt-4 text-xl font-bold text-white">All caught up</h2>
+          <p className="mt-2 text-sm text-zinc-400">No unread viewer alerts right now.</p>
+        </div>
+      )
+    }
+
+    return (
+      <div className="space-y-3">
+        {list.map((notification) => {
+          const Icon = getNotificationIcon(notification.type)
+
+          return (
+            <Link
+              key={notification.id}
+              href={notification.link}
+              className={cn(
+                "group flex gap-4 rounded-lg border p-4 transition",
+                notification.read
+                  ? "border-white/10 bg-white/[0.04] hover:bg-white/[0.07]"
+                  : "border-red-500/35 bg-red-500/10 hover:bg-red-500/15",
+              )}
+            >
+              <div
+                className={cn(
+                  "flex h-11 w-11 shrink-0 items-center justify-center rounded-lg",
+                  notification.read ? "bg-white/10 text-zinc-300" : "bg-red-600 text-white",
+                )}
+              >
+                <Icon className="h-5 w-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="font-bold text-white">{notification.title}</h3>
+                  {!notification.read && <span className="h-2 w-2 rounded-full bg-red-400" />}
+                </div>
+                <p className="mt-1 text-sm leading-6 text-zinc-400">{notification.message}</p>
+                <div className="mt-2 flex items-center text-xs text-zinc-500">
+                  <Clock className="mr-1 h-3.5 w-3.5" />
+                  {notification.time}
+                </div>
+              </div>
+            </Link>
+          )
+        })}
+      </div>
     )
   }
 
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case "new-content":
-        return <Film className="h-5 w-5" />
-      case "like":
-        return <ThumbsUp className="h-5 w-5" />
-      case "reply":
-        return <MessageSquare className="h-5 w-5" />
-      case "system":
-        return <Info className="h-5 w-5" />
-      default:
-        return <Bell className="h-5 w-5" />
-    }
-  }
-
-  const unreadCount = notifications.filter((n) => !n.read).length
-
   return (
-    <div className="min-h-screen bg-background pb-10">
-      <div className="container py-6">
-        <div className="flex items-center justify-between">
-          <PageHeader
-            title="Notifications"
-            description={`You have ${unreadCount} unread notification${unreadCount !== 1 ? "s" : ""}`}
-          />
+    <ViewerShell>
+      <section className="border-b border-white/10 bg-[radial-gradient(circle_at_top_right,rgba(220,38,38,0.22),transparent_32%),#050505]">
+        <div className="container flex min-h-[260px] flex-col justify-end gap-6 py-10 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-200">
+              <Bell className="h-3.5 w-3.5 text-red-300" />
+              Viewer alerts
+            </div>
+            <h1 className="text-4xl font-black text-white sm:text-5xl">Notifications</h1>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-400">
+              Keep track of new releases, premium suggestions, subscription notices, and saved-title updates.
+            </p>
+          </div>
 
-          <Button variant="outline" onClick={markAllAsRead} disabled={unreadCount === 0 || isLoading}>
+          <Button
+            onClick={markAllAsRead}
+            disabled={unreadCount === 0 || isLoading}
+            className="w-full bg-red-600 text-white hover:bg-red-500 sm:w-auto"
+          >
             <Check className="mr-2 h-4 w-4" />
             Mark all as read
           </Button>
         </div>
+      </section>
 
-        <Tabs defaultValue="all" className="mt-6">
-          <TabsList className="mb-6">
+      <section className="container py-8">
+        <div className="mb-5 grid gap-3 sm:grid-cols-3">
+          <div className="rounded-lg border border-white/10 bg-white/[0.04] p-4">
+            <p className="text-sm text-zinc-500">Unread</p>
+            <p className="mt-2 text-2xl font-black text-white">{unreadCount}</p>
+          </div>
+          <div className="rounded-lg border border-white/10 bg-white/[0.04] p-4">
+            <p className="text-sm text-zinc-500">Total</p>
+            <p className="mt-2 text-2xl font-black text-white">{notifications.length}</p>
+          </div>
+          <div className="rounded-lg border border-white/10 bg-white/[0.04] p-4">
+            <p className="text-sm text-zinc-500">Priority</p>
+            <p className="mt-2 text-2xl font-black text-white">Premium</p>
+          </div>
+        </div>
+
+        <Tabs defaultValue="all">
+          <TabsList className="mb-5 grid w-full grid-cols-2 bg-white/10 sm:w-[320px]">
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="unread">Unread</TabsTrigger>
           </TabsList>
-
           <TabsContent value="all" className="mt-0">
-            {isLoading ? (
-              <div className="space-y-4">
-                {[1, 2, 3, 4].map((id) => (
-                  <div key={id} className="flex gap-4 rounded-lg border p-4">
-                    <Skeleton className="h-10 w-10 rounded-full" />
-                    <div className="space-y-2 flex-1">
-                      <Skeleton className="h-5 w-2/3" />
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-1/4" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : notifications.length > 0 ? (
-              <div className="space-y-4">
-                {notifications.map((notification) => (
-                  <Link
-                    key={notification.id}
-                    href={notification.link}
-                    className={`flex gap-4 rounded-lg border p-4 transition-colors hover:bg-accent ${
-                      !notification.read ? "bg-accent/50" : ""
-                    }`}
-                  >
-                    <div
-                      className={`flex h-10 w-10 items-center justify-center rounded-full ${
-                        !notification.read ? "bg-primary text-primary-foreground" : "bg-muted"
-                      }`}
-                    >
-                      {getNotificationIcon(notification.type)}
-                    </div>
-                    <div className="flex-1">
-                      <h3 className={`font-medium ${!notification.read ? "font-semibold" : ""}`}>
-                        {notification.title}
-                      </h3>
-                      <p className="text-muted-foreground">{notification.message}</p>
-                      <div className="mt-1 flex items-center text-xs text-muted-foreground">
-                        <Clock className="mr-1 h-3 w-3" />
-                        {notification.time}
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <div className="flex h-[50vh] flex-col items-center justify-center text-center">
-                <Bell className="h-16 w-16 text-muted-foreground" />
-                <h2 className="mt-4 text-2xl font-semibold">No notifications</h2>
-                <p className="mt-2 text-muted-foreground">You're all caught up! Check back later for updates.</p>
-              </div>
-            )}
+            <NotificationList />
           </TabsContent>
-
           <TabsContent value="unread" className="mt-0">
-            {isLoading ? (
-              <div className="space-y-4">
-                {[1, 2].map((id) => (
-                  <div key={id} className="flex gap-4 rounded-lg border p-4">
-                    <Skeleton className="h-10 w-10 rounded-full" />
-                    <div className="space-y-2 flex-1">
-                      <Skeleton className="h-5 w-2/3" />
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-1/4" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : notifications.filter((n) => !n.read).length > 0 ? (
-              <div className="space-y-4">
-                {notifications
-                  .filter((notification) => !notification.read)
-                  .map((notification) => (
-                    <Link
-                      key={notification.id}
-                      href={notification.link}
-                      className="flex gap-4 rounded-lg border bg-accent/50 p-4 transition-colors hover:bg-accent"
-                    >
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                        {getNotificationIcon(notification.type)}
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold">{notification.title}</h3>
-                        <p className="text-muted-foreground">{notification.message}</p>
-                        <div className="mt-1 flex items-center text-xs text-muted-foreground">
-                          <Clock className="mr-1 h-3 w-3" />
-                          {notification.time}
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-              </div>
-            ) : (
-              <div className="flex h-[50vh] flex-col items-center justify-center text-center">
-                <Check className="h-16 w-16 text-muted-foreground" />
-                <h2 className="mt-4 text-2xl font-semibold">All caught up!</h2>
-                <p className="mt-2 text-muted-foreground">You have no unread notifications.</p>
-              </div>
-            )}
+            <NotificationList onlyUnread />
           </TabsContent>
         </Tabs>
-      </div>
-    </div>
+      </section>
+    </ViewerShell>
   )
 }

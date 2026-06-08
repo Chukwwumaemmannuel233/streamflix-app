@@ -81,6 +81,7 @@ export const mockVideos: VideoType[] = [
     rating: "PG-13",
     views: 1200000,
     categories: ["trending", "sci-fi", "adventure"],
+    access: "premium",
     creator: {
       name: "StreamFlix Originals",
       avatar: "/placeholder.svg?height=48&width=48&text=SF",
@@ -104,6 +105,7 @@ export const mockVideos: VideoType[] = [
     rating: "PG-13",
     views: 850000,
     categories: ["sci-fi", "adventure"],
+    access: "premium",
     creator: {
       name: "Galaxy Pictures",
       avatar: "/placeholder.svg?height=48&width=48&text=GP",
@@ -127,6 +129,7 @@ export const mockVideos: VideoType[] = [
     rating: "R",
     views: 750000,
     categories: ["thriller", "drama"],
+    access: "standard",
     creator: {
       name: "Mystery Box Productions",
       avatar: "/placeholder.svg?height=48&width=48&text=MB",
@@ -150,6 +153,7 @@ export const mockVideos: VideoType[] = [
     rating: "PG-13",
     views: 1500000,
     categories: ["comedy", "trending"],
+    access: "standard",
     creator: {
       name: "Comedy Central Studios",
       avatar: "/placeholder.svg?height=48&width=48&text=CC",
@@ -173,6 +177,7 @@ export const mockVideos: VideoType[] = [
     rating: "PG",
     views: 650000,
     categories: ["documentary", "adventure"],
+    access: "standard",
     creator: {
       name: "History Channel",
       avatar: "/placeholder.svg?height=48&width=48&text=HC",
@@ -196,6 +201,7 @@ export const mockVideos: VideoType[] = [
     rating: "PG-13",
     views: 920000,
     categories: ["romance", "drama"],
+    access: "premium",
     creator: {
       name: "Heartfelt Films",
       avatar: "/placeholder.svg?height=48&width=48&text=HF",
@@ -219,6 +225,7 @@ export const mockVideos: VideoType[] = [
     rating: "R",
     views: 780000,
     categories: ["horror", "thriller"],
+    access: "premium",
     creator: {
       name: "Nightmare Studios",
       avatar: "/placeholder.svg?height=48&width=48&text=NS",
@@ -242,6 +249,7 @@ export const mockVideos: VideoType[] = [
     rating: "PG",
     views: 550000,
     categories: ["documentary", "trending"],
+    access: "standard",
     creator: {
       name: "Tech Insights",
       avatar: "/placeholder.svg?height=48&width=48&text=TI",
@@ -265,6 +273,7 @@ export const mockVideos: VideoType[] = [
     rating: "G",
     views: 1100000,
     categories: ["animation", "family"],
+    access: "standard",
     creator: {
       name: "Dream Works Animation",
       avatar: "/placeholder.svg?height=48&width=48&text=DW",
@@ -288,6 +297,7 @@ export const mockVideos: VideoType[] = [
     rating: "PG-13",
     views: 1300000,
     categories: ["action", "adventure", "trending"],
+    access: "premium",
     creator: {
       name: "Epic Studios",
       avatar: "/placeholder.svg?height=48&width=48&text=ES",
@@ -311,6 +321,7 @@ export const mockVideos: VideoType[] = [
     rating: "PG",
     views: 950000,
     categories: ["fantasy", "adventure"],
+    access: "premium",
     creator: {
       name: "Magical Productions",
       avatar: "/placeholder.svg?height=48&width=48&text=MP",

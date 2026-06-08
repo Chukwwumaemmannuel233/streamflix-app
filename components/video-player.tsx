@@ -378,7 +378,7 @@ export function VideoPlayer({ videoId, videoUrl }: VideoPlayerProps) {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Rewind 10s (←)</p>
+                  <p>Rewind 10s (Left arrow)</p>
                 </TooltipContent>
               </Tooltip>
 
@@ -395,7 +395,7 @@ export function VideoPlayer({ videoId, videoUrl }: VideoPlayerProps) {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Forward 10s (→)</p>
+                  <p>Forward 10s (Right arrow)</p>
                 </TooltipContent>
               </Tooltip>
 
